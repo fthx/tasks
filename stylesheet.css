@@ -1,0 +1,10 @@
+.task-box {
+  spacing: 6px;
+
+  -st-natural-width: 9999px;
+  max-width: 192px;
+}
+
+.task-box-demands-attention {
+  color: red;
+}
