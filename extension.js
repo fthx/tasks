@@ -1,7 +1,4 @@
-//    Tasks
-//    GNOME Shell extension
-//    @fthx 2026
-
+//    Tasks - GNOME Shell extension - @fthx 2026
 
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
@@ -15,8 +12,8 @@ import { AppMenu } from 'resource:///org/gnome/shell/ui/appMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
-
-const UNFOCUSED_TASK_BUTTON_OPACITY = 128; // 0...255
+const UNFOCUSED_BUTTON_OPACITY = 128; // 0...255
+const BUTTON_WIDTH_RATIO = 0.1; // 0...1
 
 class TaskButton extends PanelMenu.Button {
     static {
@@ -33,6 +30,7 @@ class TaskButton extends PanelMenu.Button {
         this._updateApp();
         this._updateTitle();
         this._updateVisibility();
+        this._updateWidth();
 
         this._connectSignals();
     }
@@ -40,6 +38,7 @@ class TaskButton extends PanelMenu.Button {
     _connectSignals() {
         global.workspace_manager.connectObject('active-workspace-changed', () => this._updateVisibility(), this);
         global.display.connectObject('notify::focus-window', () => this._updateFocus(), this);
+        Main.layoutManager.connectObject('monitors-changed', () => this._updateWidth(), this);
 
         this._window?.connectObject(
             'notify::demands-attention', () => this._updateVisibility(),
@@ -61,6 +60,7 @@ class TaskButton extends PanelMenu.Button {
     _disconnectSignals() {
         global.workspace_manager.disconnectObject(this);
         global.display.disconnectObject(this);
+        Main.layoutManager.disconnectObject(this);
 
         this._window?.disconnectObject(this);
     }
@@ -97,7 +97,6 @@ class TaskButton extends PanelMenu.Button {
 
     _onClick(gesture) {
         const button = gesture?.get_button();
-
         switch (button) {
             case Clutter.BUTTON_PRIMARY:
                 this._toggleWindow();
@@ -128,7 +127,7 @@ class TaskButton extends PanelMenu.Button {
         this._windowHasFocus = !!focusWindow
             && (focusWindow === this._window || this._window?.is_ancestor_of_transient(focusWindow));
 
-        const opacity = this._windowHasFocus || this._windowDemandsAttention ? 255 : UNFOCUSED_TASK_BUTTON_OPACITY;
+        const opacity = this._windowHasFocus || this._windowDemandsAttention ? 255 : UNFOCUSED_BUTTON_OPACITY;
         this._icon.opacity = this._title.opacity = opacity;
     }
 
@@ -144,8 +143,11 @@ class TaskButton extends PanelMenu.Button {
         this._box.style_class = this._windowDemandsAttention ? 'task-box task-box-demands-attention' : 'task-box';
         this._updateFocus();
 
-        this.visible = this._window && !this._window.skip_taskbar
-            && (isOnActiveWorkspace || this._windowDemandsAttention);
+        this.visible = this._window && !this._window.skip_taskbar && (isOnActiveWorkspace || this._windowDemandsAttention);
+    }
+
+    _updateWidth() {
+        this._box.natural_width = Math.round(BUTTON_WIDTH_RATIO * (Main.layoutManager.primaryMonitor?.width ?? 192));
     }
 
     destroy() {
@@ -161,7 +163,6 @@ export default class TasksExtension {
     _makeTaskbar() {
         const windows = global.display.list_all_windows()
             .sort((a, b) => a.get_stable_sequence() - b.get_stable_sequence());
-
         for (const window of windows)
             this._makeTaskButton(window);
 

@@ -1,13 +1,10 @@
 .task-box {
   spacing: 6px;
 
-  -st-natural-width: 9999px;
-  max-width: 192px;
-
   border: 1px solid rgba(160, 160, 160, 0.5);
   border-radius: 999px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
   margin-top: 3px;
   margin-bottom: 3px;
 }
