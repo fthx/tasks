@@ -147,7 +147,7 @@ class TaskButton extends PanelMenu.Button {
     }
 
     _updateWidth() {
-        this._box.natural_width = Math.round(BUTTON_WIDTH_RATIO * (Main.layoutManager.primaryMonitor?.width ?? 192));
+        this._box.natural_width = Math.round(BUTTON_WIDTH_RATIO * (Main.layoutManager.primaryMonitor?.width ?? 1920));
     }
 
     destroy() {
