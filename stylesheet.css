@@ -5,6 +5,10 @@
   max-width: 192px;
 }
 
+.task-box StIcon {
+  icon-size: 18px;
+}
+
 .task-box-demands-attention {
   color: red;
 }

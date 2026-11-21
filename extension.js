@@ -16,7 +16,6 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
 
-const ICON_SIZE = 18; // px
 const UNFOCUSED_TASK_BUTTON_OPACITY = 128; // 0...255
 
 class TaskButton extends PanelMenu.Button {
@@ -69,7 +68,7 @@ class TaskButton extends PanelMenu.Button {
     _makeButtonBox() {
         this._box = new St.BoxLayout({ style_class: 'task-box' });
 
-        this._icon = new St.Icon({ icon_size: ICON_SIZE });
+        this._icon = new St.Icon();
         this._box.add_child(this._icon);
 
         this._title = new St.Label({ y_align: Clutter.ActorAlign.CENTER });
@@ -81,9 +80,6 @@ class TaskButton extends PanelMenu.Button {
     }
 
     _toggleWindow() {
-        if (!this._window)
-            return;
-
         if (!Main.overview.visible && this._windowHasFocus) {
             if (this._window.can_minimize())
                 this._window.minimize();
@@ -115,8 +111,7 @@ class TaskButton extends PanelMenu.Button {
     }
 
     _updateApp() {
-        if (this._window)
-            this._app = Shell.WindowTracker.get_default().get_window_app(this._window);
+        this._app = Shell.WindowTracker.get_default().get_window_app(this._window);
 
         if (!this._app)
             return;
@@ -126,15 +121,6 @@ class TaskButton extends PanelMenu.Button {
         this._icon.gicon = wmClass?.startsWith('chrome') ? Gio.ThemedIcon.new(wmClass) : this._app.icon;
 
         this.menu?.setApp(this._app);
-    }
-
-    _updateDemandsAttention() {
-        this._windowDemandsAttention = this._window?.demands_attention || this._window?.urgent;
-
-        if (this._windowDemandsAttention)
-            this._box.add_style_class_name('task-box-demands-attention');
-        else
-            this._box.remove_style_class_name('task-box-demands-attention');
     }
 
     _updateFocus() {
@@ -153,7 +139,8 @@ class TaskButton extends PanelMenu.Button {
         const activeWorkspace = global.workspace_manager.get_active_workspace();
         const isOnActiveWorkspace = this._window?.located_on_workspace(activeWorkspace);
 
-        this._updateDemandsAttention();
+        this._windowDemandsAttention = this._window?.demands_attention || this._window?.urgent;
+        this._box.style_class = this._windowDemandsAttention ? 'task-box task-box-demands-attention' : 'task-box';
         this._updateFocus();
 
         this.visible = this._window && !this._window.skip_taskbar
@@ -205,9 +192,7 @@ export default class TasksExtension {
 
         global.display.disconnectObject(this);
 
-        for (const button of Object.values(Main.panel.statusArea)) {
-            if (button instanceof TaskButton)
-                button.destroy();
-        }
+        for (const button of Object.values(Main.panel.statusArea).filter(b => b instanceof TaskButton))
+            button.destroy();
     }
 }

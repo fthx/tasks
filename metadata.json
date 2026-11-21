@@ -1,5 +1,5 @@
 {
-  "description": "Ultra-light taskbar that follows the GNOME Shell way.\n\nMinimal fork of Tasks in panel: just the tasks, no settings, fewer than 230 lines of code.\n\n Tasks of the active workspace only.\n Unfocused tasks are dimmed.\n Tasks demanding attention are highlighted.\n Right-click to show the app menu.\n Middle-click to open a new app window.\n Display Chromium web apps' real icons.\n\nFor more options, install Tasks in panel instead.",
+  "description": "Ultra-light taskbar that follows the GNOME Shell way.\n\nMinimal fork of Tasks in panel: just the tasks, no settings, fewer than 200 lines of code.\n\n Tasks of the active workspace only.\n Unfocused tasks are dimmed.\n Tasks demanding attention are highlighted.\n Right-click to show the app menu.\n Middle-click to open a new app window.\n Display Chromium web apps' real icons.\n\nFor more options, install Tasks in panel instead.",
   "name": "Tasks",
   "shell-version": [
     "51"
