@@ -66,6 +66,7 @@ class TaskButton extends PanelMenu.Button {
     }
 
     _makeButtonBox() {
+        this.add_style_class_name('task-button');
         this._box = new St.BoxLayout({ style_class: 'task-box' });
 
         this._icon = new St.Icon();
