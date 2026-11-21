@@ -113,7 +113,6 @@ class TaskButton extends PanelMenu.Button {
 
     _updateApp() {
         this._app = Shell.WindowTracker.get_default().get_window_app(this._window);
-
         if (!this._app)
             return;
 
@@ -129,7 +128,8 @@ class TaskButton extends PanelMenu.Button {
         this._windowHasFocus = !!focusWindow
             && (focusWindow === this._window || this._window?.is_ancestor_of_transient(focusWindow));
 
-        this._box.opacity = this._windowHasFocus || this._windowDemandsAttention ? 255 : UNFOCUSED_TASK_BUTTON_OPACITY;
+        const opacity = this._windowHasFocus || this._windowDemandsAttention ? 255 : UNFOCUSED_TASK_BUTTON_OPACITY;
+        this._icon.opacity = this._title.opacity = opacity;
     }
 
     _updateTitle() {
