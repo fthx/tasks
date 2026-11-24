@@ -96,8 +96,7 @@ class TaskButton extends PanelMenu.Button {
     }
 
     _onClick(gesture) {
-        const button = gesture?.get_button();
-        switch (button) {
+        switch (gesture?.get_button()) {
             case Clutter.BUTTON_PRIMARY:
                 this._toggleWindow();
                 break;
@@ -128,10 +127,9 @@ class TaskButton extends PanelMenu.Button {
 
         const demandsAttention = this._window.demands_attention || this._window.urgent;
         const isOnActiveWorkspace = this._window.located_on_workspace(global.workspace_manager.get_active_workspace());
-        const opacity = this._windowHasFocus || demandsAttention ? 255 : UNFOCUSED_BUTTON_OPACITY;
 
         this._box.style_class = demandsAttention ? 'task-box task-box-demands-attention' : 'task-box';
-        this._icon.opacity = this._title.opacity = opacity;
+        this._icon.opacity = this._title.opacity = this._windowHasFocus || demandsAttention ? 255 : UNFOCUSED_BUTTON_OPACITY;
         this.visible = !this._window.skip_taskbar && (isOnActiveWorkspace || demandsAttention);
     }
 
