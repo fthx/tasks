@@ -124,7 +124,7 @@ class TaskButton extends PanelMenu.Button {
 
     _updateState() {
         const focusWindow = global.display.focus_window;
-        this._windowHasFocus = !!focusWindow && (focusWindow === this._window || this._window.is_ancestor_of_transient(focusWindow));
+        this._windowHasFocus = focusWindow && (focusWindow === this._window || this._window.is_ancestor_of_transient(focusWindow));
 
         const demandsAttention = this._window.demands_attention || this._window.urgent;
         const isOnActiveWorkspace = this._window.located_on_workspace(global.workspace_manager.get_active_workspace());
